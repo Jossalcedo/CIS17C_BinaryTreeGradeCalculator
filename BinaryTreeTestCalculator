@@ -1,0 +1,123 @@
+/* Josue Salcedo
+  CIS17C
+  Professor Nguyen
+  Binary Search Tree for Test Scores
+*/
+#include<stdio.h> 
+#include<stdlib.h> 
+#include<iostream>
+using namespace std;
+
+//We create a left chld and a right child
+struct node 
+{ 
+    int key; 
+    struct node *left; //left side
+    struct node *right; //right side
+}; 
+   
+//function to create a new BST node 
+struct node *newNode(int item) 
+{ 
+    struct node *temp =  (struct node *)malloc(sizeof(struct node)); 
+    temp->key = item; 
+    temp->left = temp->right = NULL;              //Will add new key to nextleaf node
+    return temp; 
+} 
+
+//Where we will get the min value for the Tree
+int minvalue(struct node* node)
+{
+  struct node* current = node;
+  
+while(current->left !=NULL){    //Loop for us to keep going left until we hit NULL, then we will have the MINVALUE
+  current = current->left;
+}
+return(current->key);
+
+}   
+
+//Traversal of the tree 
+void inorder(struct node *root) 
+{ 
+    if (root != NULL) 
+    { 
+        inorder(root->left); 
+      
+       cout << " " << root->key << endl; 
+        inorder(root->right); 
+    } 
+} 
+   
+// A utility function to insert a new node with given key in BST 
+struct node* insert(struct node* node, int key) 
+{ 
+    // If the tree is empty, return a new node 
+    if (node == NULL) return newNode(key); 
+  
+    // If it is not empty go down the tree
+    if (key < node->key) 
+        node->left  = insert(node->left, key); 
+    else if (key > node->key) 
+        node->right = insert(node->right, key);    
+  
+    return node; 
+} 
+
+//This is how we will get the Sum of all the test scores so we can divide to get the average
+int NodeSum(node* root) 
+{ 
+    if (root == NULL) 
+        return 0; 
+    return (root->key + NodeSum(root->left) + NodeSum(root->right)); 
+} 
+
+// Main function to add all the funnctions
+int main() 
+{ 
+  int node1,
+      testgrades, //This is what will be input  into the tree
+      NumOfTests, //What we will divide the NodeSum with
+      dropansw;
+ 
+  int test;
+  test = 2;
+  cout<<"\n\nEnter the grade of your first test: "<<endl;
+
+    //This will make the first meal of the day the root to our BST
+    cin >> node1;
+    struct node *root = NULL; 
+    root = insert(root, node1);
+
+  cout << "How many more tests did you take after this one? Please make sure to include 2 or more."<<endl;
+    cin >> NumOfTests;
+    
+    while(NumOfTests < 2){
+      cout << "You must include 2 or more tests to continue. ";
+      cin >> NumOfTests;
+    }
+
+    //This is where the user will input the nodes in our tree using their test scores.
+  for(int i = 0; i< NumOfTests; i++ ){
+      cout << "Enter the test score for test " << test++ << endl;
+      cin >> testgrades;
+      insert(root, testgrades); 
+  }
+  
+    
+   
+    //Print inoder traversal of the Tree
+    inorder(root); 
+   int drop;
+    int sum = NodeSum(root); 
+    int avg = sum / ++NumOfTests;
+    cout << "\nYour test score average was: " << avg << endl; 
+
+      cout << "\nYour lowest test score was:" << minvalue(root);
+    
+    //Both NodeSum and minvalue come from calculations in the binary tree
+drop = (NodeSum(root) - minvalue(root)) / --NumOfTests;
+
+cout << "\nIf your profesor drops your lowest test score your avergae would be: " << drop <<endl;
+    return 0; 
+} 
